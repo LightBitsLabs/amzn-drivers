@@ -1,0 +1,12 @@
+amzn-drivers:
+  aws_modules:
+    build:
+      - make  all
+    install:
+      - make install
+    deps:
+      - linux:linux_headers
+      - file://kernel
+      - file://Makefile
+      - file://Makefile.env
+      - file://lb.yaml
