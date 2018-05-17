@@ -15,10 +15,10 @@ ccflags-y += -I$(src)/$(ENA_COM_PATH)/
 
 
 #BUILD_KERNEL ?= $(shell uname -r)
-#
-#ccflags-y += -Wfatal-errors
-#all:
-#	make -C /lib/modules/$(BUILD_KERNEL)/build M=$(CURDIR) modules
-#
-#clean:
-#	make -C /lib/modules/$(BUILD_KERNEL)/build M=$(CURDIR) clean
+
+ccflags-y += -Wfatal-errors
+all:
+	$(Q)$(MAKE) -C $(KDIR) M=$(CURDIR) modules
+
+clean:
+	$(Q)$(MAKE) -C $(KDIR) M=$(CURDIR) clean

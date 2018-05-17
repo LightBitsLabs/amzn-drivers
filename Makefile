@@ -8,7 +8,7 @@ checkout_deps:
 build: modules
 
 modules: checkout_deps
-	$(Q)$(MAKE) -C $(KDIR) M=$(CURDIR)/kernel/linux/ena modules EXTRA_CFLAGS="-Werror"
+	$(Q)$(MAKE) -C kernel/linux/ena all
 
 install: |install_dir
 	$(Q)find . -name "*.ko" -exec cp {} $(AMZN_INSTALL_DIR)/ \;
@@ -20,7 +20,6 @@ checkin:
 	$(Q)component-tool checkin -v --repo=amzn-drivers --type=$(BUILD_TYPE) aws_modules
 
 clean:
-	$(Q)$(MAKE) -C $(KDIR) M=$(CURDIR)/kernel/linux/ena clean EXTRA_CFLAGS="-Werror"
+	$(Q)$(MAKE) -C kernel/linux/ena clean
 
 .PHONY: checkout_deps clean install_dir checkin
-
