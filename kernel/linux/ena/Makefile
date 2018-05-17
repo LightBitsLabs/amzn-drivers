@@ -22,3 +22,4 @@ all:
 
 clean:
 	$(Q)$(MAKE) -C $(KDIR) M=$(CURDIR) clean
+	$(Q)find $(ENA_COM_PATH) -name "*.o" | xargs rm -f
