@@ -19,7 +19,7 @@ install_dir:
 checkin:
 	$(Q)component-tool checkin -v --repo=amzn-drivers --type=$(BUILD_TYPE) aws_modules
 
-clean:
+clean: checkout_deps
 	$(Q)$(MAKE) -C kernel/linux/ena clean
 
 .PHONY: checkout_deps clean install_dir checkin
