@@ -30,6 +30,9 @@
  * SOFTWARE.
  */
 
+
+
+
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #ifdef CONFIG_RFS_ACCEL
@@ -71,6 +74,10 @@ MODULE_VERSION(DRV_MODULE_VERSION);
 static int debug = -1;
 module_param(debug, int, 0);
 MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
+
+int ena_tx_queues[8] = {0,1,2,3,4,5,6,7}; 
+int ena_tx_count=8;
+module_param_array(ena_tx_queues, int, &ena_tx_count, S_IRUGO | S_IWUSR);
 
 static struct ena_aenq_handlers aenq_handlers;
 
@@ -2373,6 +2380,7 @@ static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb)
 #endif
 {
 	u16 qid;
+        u16 queue_idx;
 	/* we suspect that this is good for in--kernel network services that
 	 * want to loop incoming skb rx to tx in normal user generated traffic,
 	 * most probably we will not get to this
@@ -2386,9 +2394,10 @@ static u16 ena_select_queue(struct net_device *dev, struct sk_buff *skb)
 		qid = __netdev_pick_tx(dev, skb);
 #else
 		qid = skb_tx_hash(dev, skb);
-#endif /* HAVE_NDO_SELECT_QUEUE_ACCEL_FALLBACK */
+#endif  /* HAVE_NDO_SELECT_QUEUE_ACCEL_FALLBACK */
 
-	return qid;
+	queue_idx = qid % ena_tx_count;
+        return ena_tx_queues[queue_idx];
 }
 #ifdef HAVE_SET_RX_MODE
 
@@ -3972,6 +3981,7 @@ static void unimplemented_aenq_handler(void *data,
 	netif_err(adapter, drv, adapter->netdev,
 		  "Unknown event was received or event with unimplemented handler\n");
 }
+
 
 static struct ena_aenq_handlers aenq_handlers = {
 	.handlers = {
